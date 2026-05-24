@@ -65,7 +65,7 @@ config:
   mcEgressGroupId: ""
   mcEgressHopLimit: 1
 
-  # Block header egress (BRC-131 SPV)
+  # Block header egress (BRC-135 SPV; 172-byte FrameVerV7 frames emitted from BRC-131 BlockAnnounce)
   headerEgressEnabled: false
   headerEgressAddr: "127.0.0.1:9101"
   headerEgressProto: "udp"
