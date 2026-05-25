@@ -99,12 +99,34 @@ config:
   subtreeDataEnabled: false
   subtreeDataVerifyMerkle: false
 
-  # Egress dedup
+  # Egress sliding-window dedup (keyed by HashKey∥SeqNum)
   egressDedupCap: 0
   egressDedupTtl: "2s"
+
+  # DEPRECATED: prefer the egressDedup* and ingressSet* fields below.
+  # Kept as compatibility aliases; presence triggers a startup warning.
   txidDedupAddr: ""
-  txidDedupPrefix: "bsl:txid:"
-  txidDedupTtl: "60s"
+  txidDedupPrefix: ""
+  txidDedupTtl: "0s"
+
+  # Per-deployment egress TxID dedup. HA siblings share deploymentId to
+  # dedup their downstream forward; distinct deploymentIds race independently.
+  # Default deploymentId/nodeId empty → derived from pod hostname at runtime.
+  deploymentId: ""
+  nodeId: ""
+  egressDedupRedisAddr: ""
+  egressDedupPrefix: "bsl:egr:"
+  egressDedupTtlRedis: "60s"
+  egressDedupLocalCap: 1048576
+
+  # Courtesy SETNX into the local proxy's ingress namespace so the proxy
+  # knows a TxID is already on the multicast network. Prefix MUST match
+  # the proxy chart's config.txidDedupPrefix exactly. Leave
+  # ingressSetRedisAddr empty to disable.
+  ingressSetRedisAddr: ""
+  ingressSetPrefix: "bsp:tx:"
+  ingressSetTtl: "10m"
+  ingressSetLocalCap: 1048576
 
   # Runtime
   # numWorkers is HARDCODED to 1 by the chart. Linux SO_REUSEPORT delivers

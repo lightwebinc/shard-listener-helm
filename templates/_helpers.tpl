@@ -167,12 +167,43 @@ to defend against schema bypass.
 - name: EGRESS_DEDUP_TTL
   value: {{ .Values.config.egressDedupTtl | quote }}
 {{- if .Values.config.txidDedupAddr }}
+# DEPRECATED — emit only when operator explicitly sets the alias.
 - name: TXID_DEDUP_ADDR
   value: {{ .Values.config.txidDedupAddr | quote }}
+{{- if .Values.config.txidDedupPrefix }}
 - name: TXID_DEDUP_PREFIX
   value: {{ .Values.config.txidDedupPrefix | quote }}
+{{- end }}
+{{- if .Values.config.txidDedupTtl }}
 - name: TXID_DEDUP_TTL
   value: {{ .Values.config.txidDedupTtl | quote }}
+{{- end }}
+{{- end }}
+{{- if .Values.config.deploymentId }}
+- name: DEPLOYMENT_ID
+  value: {{ .Values.config.deploymentId | quote }}
+{{- end }}
+{{- if .Values.config.nodeId }}
+- name: NODE_ID
+  value: {{ .Values.config.nodeId | quote }}
+{{- end }}
+- name: EGRESS_DEDUP_REDIS_ADDR
+  value: {{ .Values.config.egressDedupRedisAddr | quote }}
+- name: EGRESS_DEDUP_PREFIX
+  value: {{ .Values.config.egressDedupPrefix | quote }}
+- name: EGRESS_DEDUP_TTL_REDIS
+  value: {{ .Values.config.egressDedupTtlRedis | quote }}
+- name: EGRESS_DEDUP_LOCAL_CAP
+  value: {{ .Values.config.egressDedupLocalCap | quote }}
+{{- if .Values.config.ingressSetRedisAddr }}
+- name: INGRESS_SET_REDIS_ADDR
+  value: {{ .Values.config.ingressSetRedisAddr | quote }}
+- name: INGRESS_SET_PREFIX
+  value: {{ .Values.config.ingressSetPrefix | quote }}
+- name: INGRESS_SET_TTL
+  value: {{ .Values.config.ingressSetTtl | quote }}
+- name: INGRESS_SET_LOCAL_CAP
+  value: {{ .Values.config.ingressSetLocalCap | quote }}
 {{- end }}
 # NUM_WORKERS is intentionally hardcoded to 1 by the chart.
 # See values.yaml comment and the SO_REUSEPORT multicast notes.
