@@ -33,7 +33,22 @@
         "beaconScope": { "type": "string", "enum": ["link", "site", "org", "global"] },
         "numWorkers":  { "type": "integer", "minimum": 1, "maximum": 1,
                          "description": "MUST be 1; multiple workers cause SO_REUSEPORT multicast duplication" },
-        "debug":       { "type": "boolean" }
+        "debug":       { "type": "boolean" },
+        "egressDedupCap":       { "type": "integer", "minimum": 0 },
+        "egressDedupTtl":       { "type": "string" },
+        "deploymentId":         { "type": "string" },
+        "nodeId":               { "type": "string" },
+        "egressDedupRedisAddr": { "type": "string" },
+        "egressDedupPrefix":    { "type": "string" },
+        "egressDedupTtlRedis":  { "type": "string" },
+        "egressDedupLocalCap":  { "type": "integer", "minimum": 0 },
+        "ingressSetRedisAddr":  { "type": "string" },
+        "ingressSetPrefix":     { "type": "string" },
+        "ingressSetTtl":        { "type": "string" },
+        "ingressSetLocalCap":   { "type": "integer", "minimum": 0 },
+        "txidDedupAddr":        { "type": "string" },
+        "txidDedupPrefix":      { "type": "string" },
+        "txidDedupTtl":         { "type": "string" }
       }
     }
   }
