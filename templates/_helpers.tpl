@@ -1,8 +1,8 @@
-{{- define "bitcoin-shard-listener.name" -}}
+{{- define "shard-listener.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "bitcoin-shard-listener.fullname" -}}
+{{- define "shard-listener.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -15,32 +15,32 @@
 {{- end -}}
 {{- end -}}
 
-{{- define "bitcoin-shard-listener.chart" -}}
+{{- define "shard-listener.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "bitcoin-shard-listener.labels" -}}
-helm.sh/chart: {{ include "bitcoin-shard-listener.chart" . }}
-{{ include "bitcoin-shard-listener.selectorLabels" . }}
+{{- define "shard-listener.labels" -}}
+helm.sh/chart: {{ include "shard-listener.chart" . }}
+{{ include "shard-listener.selectorLabels" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-app.kubernetes.io/part-of: bitcoin-multicast
+app.kubernetes.io/part-of: bsv-multicast
 {{- end -}}
 
-{{- define "bitcoin-shard-listener.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "bitcoin-shard-listener.name" . }}
+{{- define "shard-listener.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "shard-listener.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
-{{- define "bitcoin-shard-listener.serviceAccountName" -}}
+{{- define "shard-listener.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-{{- default (include "bitcoin-shard-listener.fullname" .) .Values.serviceAccount.name -}}
+{{- default (include "shard-listener.fullname" .) .Values.serviceAccount.name -}}
 {{- else -}}
 {{- default "default" .Values.serviceAccount.name -}}
 {{- end -}}
 {{- end -}}
 
-{{- define "bitcoin-shard-listener.multusAnnotation" -}}
+{{- define "shard-listener.multusAnnotation" -}}
 {{- if eq .Values.networking.mode "multus" -}}
 k8s.v1.cni.cncf.io/networks: |
   [{
@@ -54,7 +54,7 @@ k8s.v1.cni.cncf.io/networks: |
 {{- end -}}
 {{- end -}}
 
-{{- define "bitcoin-shard-listener.multicastIf" -}}
+{{- define "shard-listener.multicastIf" -}}
 {{- if eq .Values.networking.mode "multus" -}}
 {{- .Values.networking.multus.interface -}}
 {{- else -}}
@@ -67,9 +67,9 @@ Container env. NUM_WORKERS is forced to 1 by the chart; the value is not
 sourced from .Values.config.numWorkers (which the schema already restricts to 1)
 to defend against schema bypass.
 */}}
-{{- define "bitcoin-shard-listener.env" -}}
+{{- define "shard-listener.env" -}}
 - name: MULTICAST_IF
-  value: {{ include "bitcoin-shard-listener.multicastIf" . | quote }}
+  value: {{ include "shard-listener.multicastIf" . | quote }}
 - name: LISTEN_PORT
   value: {{ .Values.config.listenPort | quote }}
 - name: SHARD_BITS
@@ -235,8 +235,8 @@ to defend against schema bypass.
 {{/*
 Shared pod spec body so deployment.yaml and daemonset.yaml stay in sync.
 */}}
-{{- define "bitcoin-shard-listener.podSpec" -}}
-serviceAccountName: {{ include "bitcoin-shard-listener.serviceAccountName" . }}
+{{- define "shard-listener.podSpec" -}}
+serviceAccountName: {{ include "shard-listener.serviceAccountName" . }}
 {{- with .Values.imagePullSecrets }}
 imagePullSecrets:
   {{- toYaml . | nindent 2 }}
@@ -261,7 +261,7 @@ containers:
       {{- toYaml . | nindent 6 }}
     {{- end }}
     env:
-      {{- include "bitcoin-shard-listener.env" . | nindent 6 }}
+      {{- include "shard-listener.env" . | nindent 6 }}
     ports:
       - name: udp-mcast
         containerPort: {{ .Values.config.listenPort }}

@@ -1,23 +1,23 @@
-# bitcoin-shard-listener Helm chart
+# shard-listener Helm chart
 
-Helm chart for [bitcoin-shard-listener](https://github.com/lightwebinc/bitcoin-shard-listener) — the IPv6 multicast shard subscriber in the BSV multicast transaction distribution pipeline.
+Helm chart for [shard-listener](https://github.com/lightwebinc/shard-listener) — the IPv6 multicast shard subscriber in the BSV multicast transaction distribution pipeline.
 
-This repository packages templates, default values, JSON Schema validation, and CI workflows for the listener. The application source lives in [`bitcoin-shard-listener`](https://github.com/lightwebinc/bitcoin-shard-listener).
+This repository packages templates, default values, JSON Schema validation, and CI workflows for the listener. The application source lives in [`shard-listener`](https://github.com/lightwebinc/shard-listener).
 
 ## Install
 
-> The chart references `ghcr.io/lightwebinc/bitcoin-shard-listener:<appVersion>`. Until the image is published from the application repo, `helm install` will succeed but pods will `ImagePullBackOff`.
+> The chart references `ghcr.io/lightwebinc/shard-listener:<appVersion>`. Until the image is published from the application repo, `helm install` will succeed but pods will `ImagePullBackOff`.
 
 ```bash
 # DaemonSet over a labeled set of fabric nodes (recommended)
-helm install listener oci://ghcr.io/lightwebinc/charts/bitcoin-shard-listener \
-  --version 0.1.0 -n bitcoin-mcast --create-namespace \
+helm install listener oci://ghcr.io/lightwebinc/charts/shard-listener \
+  --version 0.1.0 -n bsv-mcast --create-namespace \
   --set workloadType=DaemonSet \
-  --set 'nodeSelector.bitcoin-mcast/role=listener' \
+  --set 'nodeSelector.bsv-mcast/role=listener' \
   --set config.retryEndpoints='[fd20::24]:9300\,[fd20::25]:9300\,[fd20::26]:9300'
 
 # Single-replica Deployment
-helm install listener . -n bitcoin-mcast --create-namespace \
+helm install listener . -n bsv-mcast --create-namespace \
   --set networking.mode=host
 ```
 
@@ -30,7 +30,7 @@ helm install listener . -n bitcoin-mcast --create-namespace \
 
 ## Networking modes
 
-Same as the proxy chart — `multus` (default), `host`, or `unicast` (reserved). See the [composition spec](https://github.com/lightwebinc/bitcoin-multicast/blob/main/containerization/composition-spec.md).
+Same as the proxy chart — `multus` (default), `host`, or `unicast` (reserved). See the [composition spec](https://github.com/lightwebinc/bsv-multicast/blob/main/containerization/composition-spec.md).
 
 ## Important constraint — `NUM_WORKERS=1`
 
@@ -51,7 +51,7 @@ See [`values.yaml`](values.yaml). Every flag accepted by the listener binary is 
 ## Helm test
 
 ```bash
-helm test listener -n bitcoin-mcast
+helm test listener -n bsv-mcast
 ```
 
 ## Release

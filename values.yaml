@@ -1,4 +1,4 @@
-# Default values for bitcoin-shard-listener.
+# Default values for shard-listener.
 # Every binary flag is exposed under .config; advanced ones empty/disabled by default.
 
 # When workloadType=Deployment, replicaCount controls replicas.
@@ -9,7 +9,7 @@ replicaCount: 1
 workloadType: Deployment
 
 image:
-  repository: ghcr.io/lightwebinc/bitcoin-shard-listener
+  repository: ghcr.io/lightwebinc/shard-listener
   pullPolicy: IfNotPresent
   tag: ""
 
@@ -35,13 +35,13 @@ networking:
   mode: multus
   multus:
     networkName: mcast-fabric
-    namespace: bitcoin-mcast
+    namespace: bsv-mcast
     fabricIPv6: ""
     interface: net1
   host:
     dnsPolicy: ClusterFirstWithHostNet
 
-# Full surface — every flag in bitcoin-shard-listener/config/config.go.
+# Full surface — every flag in shard-listener/config/config.go.
 config:
   multicastIf: "eth0"
   listenPort: 9001

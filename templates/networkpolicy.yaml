@@ -2,13 +2,13 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: {{ include "bitcoin-shard-listener.fullname" . }}
+  name: {{ include "shard-listener.fullname" . }}
   labels:
-    {{- include "bitcoin-shard-listener.labels" . | nindent 4 }}
+    {{- include "shard-listener.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:
-      {{- include "bitcoin-shard-listener.selectorLabels" . | nindent 6 }}
+      {{- include "shard-listener.selectorLabels" . | nindent 6 }}
   policyTypes:
     - Ingress
   ingress:

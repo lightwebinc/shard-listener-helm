@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "bitcoin-shard-listener.fullname" . }}
+  name: {{ include "shard-listener.fullname" . }}
   labels:
-    {{- include "bitcoin-shard-listener.labels" . | nindent 4 }}
+    {{- include "shard-listener.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   selector:
-    {{- include "bitcoin-shard-listener.selectorLabels" . | nindent 4 }}
+    {{- include "shard-listener.selectorLabels" . | nindent 4 }}
   ports:
     - name: metrics
       port: {{ .Values.service.metricsPort }}

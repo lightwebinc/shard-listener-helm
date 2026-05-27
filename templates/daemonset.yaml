@@ -2,13 +2,13 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ include "bitcoin-shard-listener.fullname" . }}
+  name: {{ include "shard-listener.fullname" . }}
   labels:
-    {{- include "bitcoin-shard-listener.labels" . | nindent 4 }}
+    {{- include "shard-listener.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      {{- include "bitcoin-shard-listener.selectorLabels" . | nindent 6 }}
+      {{- include "shard-listener.selectorLabels" . | nindent 6 }}
   {{- with .Values.updateStrategy }}
   updateStrategy:
     {{- toYaml . | nindent 4 }}
@@ -17,16 +17,16 @@ spec:
     metadata:
       annotations:
         {{- if eq .Values.networking.mode "multus" }}
-        {{- include "bitcoin-shard-listener.multusAnnotation" . | nindent 8 }}
+        {{- include "shard-listener.multusAnnotation" . | nindent 8 }}
         {{- end }}
         {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "bitcoin-shard-listener.selectorLabels" . | nindent 8 }}
+        {{- include "shard-listener.selectorLabels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
-      {{- include "bitcoin-shard-listener.podSpec" . | nindent 6 }}
+      {{- include "shard-listener.podSpec" . | nindent 6 }}
 {{- end }}
