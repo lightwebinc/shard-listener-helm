@@ -47,6 +47,21 @@ See [`values.yaml`](values.yaml). Every flag accepted by the listener binary is 
 - Cross-listener TxID dedup via Redis
 - Sender allow/deny CIDR lists
 - Beacon-driven retry endpoint discovery (BRC-126)
+- SSM (RFC 4607) opt-in: `config.sourceMode=ssm` + per-control-group bootstrap source lists
+
+### SSM (Source-Specific Multicast)
+
+`config.sourceMode` defaults to `asm`. When `ssm`, supply at least one
+of `config.ssmBootstrap.{manifest,beacon,subtreeAnnounce}` (DNS names
+or IPv6 literals — headless-Service names are the production pattern).
+Each list renders to its own `SSM_BOOTSTRAP_*` env var and is resolved
+via `shard-common/bootstrap.Resolver` (fail-closed startup; last-good
+retention on transient refresh failures). `config.ssmPublishersStatic`
+is a lab/CI escape hatch for the data-plane source list; production
+must use manifest-driven discovery. Chart validation fails closed when
+`sourceMode=ssm` and no bootstrap or static list is provided. See the
+[SSM Support Plan](https://github.com/lightwebinc/bsv-multicast/blob/main/docs/SourceSpecificMulticast/ssm-support-plan.md)
+for fabric prerequisites (PIM-SSM, MLDv2, raised `mld_max_msf`).
 
 ## Helm test
 
