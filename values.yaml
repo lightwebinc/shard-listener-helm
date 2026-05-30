@@ -52,6 +52,18 @@ config:
   subtreeInclude: ""
   subtreeExclude: ""
 
+  # SSM (RFC 4607). See bsv-multicast/docs/SourceSpecificMulticast.
+  # sourceMode "ssm" requires at least one of ssmBootstrap.* or
+  # ssmPublishersStatic. Each list entry is an IPv6 literal or DNS name;
+  # the bootstrap.Resolver loop resolves AAAA records every ssmBootstrapRefresh.
+  sourceMode: "asm"
+  ssmBootstrap:
+    manifest: []         # ["shard-manifest-headless.svc.cluster.local"]
+    beacon: []           # ["retry-endpoint-headless.svc.cluster.local"]
+    subtreeAnnounce: []
+  ssmPublishersStatic: []
+  ssmBootstrapRefresh: "30s"
+
   # Downstream egress
   egressAddr: "127.0.0.1:9100"
   egressProto: "udp"

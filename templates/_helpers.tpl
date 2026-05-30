@@ -78,6 +78,30 @@ to defend against schema bypass.
   value: {{ .Values.config.mcScope | quote }}
 - name: MC_GROUP_ID
   value: {{ .Values.config.mcGroupId | quote }}
+- name: SOURCE_MODE
+  value: {{ .Values.config.sourceMode | default "asm" | quote }}
+{{- with .Values.config.ssmBootstrap }}
+{{- if .manifest }}
+- name: SSM_BOOTSTRAP_MANIFEST
+  value: {{ join "," .manifest | quote }}
+{{- end }}
+{{- if .beacon }}
+- name: SSM_BOOTSTRAP_BEACON
+  value: {{ join "," .beacon | quote }}
+{{- end }}
+{{- if .subtreeAnnounce }}
+- name: SSM_BOOTSTRAP_SUBTREE_ANNOUNCE
+  value: {{ join "," .subtreeAnnounce | quote }}
+{{- end }}
+{{- end }}
+{{- if .Values.config.ssmPublishersStatic }}
+- name: SSM_PUBLISHERS_STATIC
+  value: {{ join "," .Values.config.ssmPublishersStatic | quote }}
+{{- end }}
+{{- if .Values.config.ssmBootstrapRefresh }}
+- name: SSM_BOOTSTRAP_REFRESH
+  value: {{ .Values.config.ssmBootstrapRefresh | quote }}
+{{- end }}
 - name: SHARD_INCLUDE
   value: {{ .Values.config.shardInclude | quote }}
 - name: SUBTREE_INCLUDE
