@@ -59,7 +59,19 @@
         "ingressSetLocalCap":   { "type": "integer", "minimum": 0 },
         "txidDedupAddr":        { "type": "string" },
         "txidDedupPrefix":      { "type": "string" },
-        "txidDedupTtl":         { "type": "string" }
+        "txidDedupTtl":         { "type": "string" },
+        "autoShardConfig": {
+          "type": "object",
+          "properties": {
+            "enabled":                  { "type": "boolean" },
+            "bootstrap":                { "type": "string", "enum": ["optional", "required"] },
+            "pilotQuorum":              { "type": "integer", "minimum": 1 },
+            "pilotHysteresis":          { "type": "string" },
+            "shardIncludeFromManifest": { "type": "boolean" },
+            "liveResharding":           { "type": "boolean" },
+            "bridgingWindow":           { "type": "string" }
+          }
+        }
       }
     }
   }

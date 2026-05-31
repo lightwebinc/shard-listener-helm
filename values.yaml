@@ -155,6 +155,21 @@ config:
   otlpEndpoint: ""
   otlpInterval: "30s"
 
+  # BRC-137 auto-shard-config consumer (opt-in). See
+  # bsv-multicast/docs/AutoShardConfig/auto-shard-config-plan.md.
+  # When enabled the listener decodes manifests off its beacon socket and
+  # adopts ShardBits/SourceMode (and, with shardIncludeFromManifest, joins
+  # pilot groups via runtime AddGroup/RemoveGroup) once quorum + hysteresis
+  # are met. Manual config above always wins; default off.
+  autoShardConfig:
+    enabled: false                # MANIFEST_CONSUMER_ENABLED — master switch
+    bootstrap: "optional"         # MANIFEST_BOOTSTRAP — optional | required (fail-closed)
+    pilotQuorum: 2                # PILOT_QUORUM — min distinct authoritative announcers
+    pilotHysteresis: "0s"         # PILOT_HYSTERESIS — 0 ⇒ 2 × AnnounceInterval
+    shardIncludeFromManifest: false  # SHARD_INCLUDE_FROM_MANIFEST — additive auto-join: union(shardInclude, pilot groups)
+    liveResharding: false         # LIVE_RESHARDING — bridging vs restart-on-adopt
+    bridgingWindow: "0s"          # BRIDGING_WINDOW — 0 ⇒ honour pilot TransitionEpoch
+
 service:
   type: ClusterIP
   metricsPort: 9200

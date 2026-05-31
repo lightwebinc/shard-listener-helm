@@ -251,6 +251,22 @@ to defend against schema bypass.
 - name: OTLP_INTERVAL
   value: {{ .Values.config.otlpInterval | quote }}
 {{- end }}
+{{- if .Values.config.autoShardConfig }}
+- name: MANIFEST_CONSUMER_ENABLED
+  value: {{ .Values.config.autoShardConfig.enabled | quote }}
+- name: MANIFEST_BOOTSTRAP
+  value: {{ .Values.config.autoShardConfig.bootstrap | quote }}
+- name: PILOT_QUORUM
+  value: {{ .Values.config.autoShardConfig.pilotQuorum | quote }}
+- name: PILOT_HYSTERESIS
+  value: {{ .Values.config.autoShardConfig.pilotHysteresis | quote }}
+- name: SHARD_INCLUDE_FROM_MANIFEST
+  value: {{ .Values.config.autoShardConfig.shardIncludeFromManifest | quote }}
+- name: LIVE_RESHARDING
+  value: {{ .Values.config.autoShardConfig.liveResharding | quote }}
+- name: BRIDGING_WINDOW
+  value: {{ .Values.config.autoShardConfig.bridgingWindow | quote }}
+{{- end }}
 {{- with .Values.extraEnv }}
 {{ toYaml . }}
 {{- end }}

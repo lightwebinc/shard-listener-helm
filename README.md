@@ -63,6 +63,28 @@ must use manifest-driven discovery. Chart validation fails closed when
 [SSM Support Plan](https://github.com/lightwebinc/bsv-multicast/blob/main/docs/SourceSpecificMulticast/ssm-support-plan.md)
 for fabric prerequisites (PIM-SSM, MLDv2, raised `mld_max_msf`).
 
+### BRC-137 auto-shard-config (opt-in)
+
+`config.autoShardConfig` exposes the BRC-137 manifest consumer. Off by
+default; manual `config.shardBits`/`sourceMode`/`shardInclude` always win.
+When `enabled: true` the listener decodes manifests off its beacon socket
+and adopts `ShardBits`/`SourceMode` once `pilotQuorum` distinct
+authoritative announcers agree for the hysteresis window. With
+`shardIncludeFromManifest: true` it additionally joins pilot groups at
+runtime (`union(shardInclude, pilot groups)`).
+
+| Key | Env var | Default | Notes |
+|-----|---------|---------|-------|
+| `enabled` | `MANIFEST_CONSUMER_ENABLED` | `false` | master switch |
+| `bootstrap` | `MANIFEST_BOOTSTRAP` | `optional` | `required` fails closed: no data-plane bind until quorum |
+| `pilotQuorum` | `PILOT_QUORUM` | `2` | min distinct authoritative announcers |
+| `pilotHysteresis` | `PILOT_HYSTERESIS` | `0s` | `0s` ⇒ 2 × AnnounceInterval |
+| `shardIncludeFromManifest` | `SHARD_INCLUDE_FROM_MANIFEST` | `false` | additive auto-join to pilot groups |
+| `liveResharding` | `LIVE_RESHARDING` | `false` | bridging vs restart-on-adopt |
+| `bridgingWindow` | `BRIDGING_WINDOW` | `0s` | `0s` ⇒ honour pilot `TransitionEpoch` |
+
+See the [Automatic Shard Configuration Plan](https://github.com/lightwebinc/bsv-multicast/blob/main/docs/AutoShardConfig/auto-shard-config-plan.md).
+
 ## Helm test
 
 ```bash
