@@ -211,17 +211,43 @@ to defend against schema bypass.
 - name: NODE_ID
   value: {{ .Values.config.nodeId | quote }}
 {{- end }}
+{{- if .Values.config.egressDedupBackend }}
+- name: EGRESS_DEDUP_BACKEND
+  value: {{ .Values.config.egressDedupBackend | quote }}
+{{- end }}
 - name: EGRESS_DEDUP_REDIS_ADDR
   value: {{ .Values.config.egressDedupRedisAddr | quote }}
+{{- if .Values.config.egressDedupAerospikeHosts }}
+- name: EGRESS_DEDUP_AEROSPIKE_HOSTS
+  value: {{ .Values.config.egressDedupAerospikeHosts | quote }}
+- name: EGRESS_DEDUP_AEROSPIKE_NAMESPACE
+  value: {{ .Values.config.egressDedupAerospikeNamespace | quote }}
+- name: EGRESS_DEDUP_AEROSPIKE_SET
+  value: {{ .Values.config.egressDedupAerospikeSet | quote }}
+{{- end }}
 - name: EGRESS_DEDUP_PREFIX
   value: {{ .Values.config.egressDedupPrefix | quote }}
 - name: EGRESS_DEDUP_TTL_REDIS
   value: {{ .Values.config.egressDedupTtlRedis | quote }}
 - name: EGRESS_DEDUP_LOCAL_CAP
   value: {{ .Values.config.egressDedupLocalCap | quote }}
+{{- if or .Values.config.ingressSetRedisAddr .Values.config.ingressSetAerospikeHosts (.Values.config.ingressSetBackend | default "" | ne "") }}
+{{- if .Values.config.ingressSetBackend }}
+- name: INGRESS_SET_BACKEND
+  value: {{ .Values.config.ingressSetBackend | quote }}
+{{- end }}
 {{- if .Values.config.ingressSetRedisAddr }}
 - name: INGRESS_SET_REDIS_ADDR
   value: {{ .Values.config.ingressSetRedisAddr | quote }}
+{{- end }}
+{{- if .Values.config.ingressSetAerospikeHosts }}
+- name: INGRESS_SET_AEROSPIKE_HOSTS
+  value: {{ .Values.config.ingressSetAerospikeHosts | quote }}
+- name: INGRESS_SET_AEROSPIKE_NAMESPACE
+  value: {{ .Values.config.ingressSetAerospikeNamespace | quote }}
+- name: INGRESS_SET_AEROSPIKE_SET
+  value: {{ .Values.config.ingressSetAerospikeSet | quote }}
+{{- end }}
 - name: INGRESS_SET_PREFIX
   value: {{ .Values.config.ingressSetPrefix | quote }}
 - name: INGRESS_SET_TTL

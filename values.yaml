@@ -126,16 +126,28 @@ config:
   # Default deploymentId/nodeId empty → derived from pod hostname at runtime.
   deploymentId: ""
   nodeId: ""
+  # Tier-2 backend is modular (shard-common/cache): redis|aerospike|memory|none.
+  # Empty backend infers redis when the matching redisAddr is set, else none.
+  # See bsv-multicast/docs/ModularCacheBackend/modular-cache-backend.md
+  egressDedupBackend: ""
   egressDedupRedisAddr: ""
+  egressDedupAerospikeHosts: ""        # comma-separated host:port
+  egressDedupAerospikeNamespace: "cache"
+  egressDedupAerospikeSet: "bsl-egr"
   egressDedupPrefix: "bsl:egr:"
   egressDedupTtlRedis: "60s"
   egressDedupLocalCap: 1048576
 
   # Courtesy SETNX into the local proxy's ingress namespace so the proxy
   # knows a TxID is already on the multicast network. Prefix MUST match
-  # the proxy chart's config.txidDedupPrefix exactly. Leave
-  # ingressSetRedisAddr empty to disable.
+  # the proxy chart's config.txidDedupPrefix exactly. Leave the backend at
+  # none (and ingressSetRedisAddr empty) to disable. The two stores are
+  # addressed independently — either may use a different backend/endpoint.
+  ingressSetBackend: ""
   ingressSetRedisAddr: ""
+  ingressSetAerospikeHosts: ""
+  ingressSetAerospikeNamespace: "cache"
+  ingressSetAerospikeSet: "bsp-tx"
   ingressSetPrefix: "bsp:tx:"
   ingressSetTtl: "10m"
   ingressSetLocalCap: 1048576

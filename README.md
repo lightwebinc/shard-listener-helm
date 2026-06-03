@@ -44,10 +44,26 @@ See [`values.yaml`](values.yaml). Every flag accepted by the listener binary is 
 - BRC-131 block header retransmission (unicast + multicast)
 - BRC-127 subtree group subscriptions
 - BRC-132 subtree data caching
-- Cross-listener TxID dedup via Redis
+- Cross-listener TxID dedup via a modular cache backend (see below)
 - Sender allow/deny CIDR lists
 - Beacon-driven retry endpoint discovery (BRC-126)
 - SSM (RFC 4607) opt-in: `config.sourceMode=ssm` + per-control-group bootstrap source lists
+
+### Dedup cache backend
+
+The egress dedup gate and the courtesy ingress mark each use the modular
+`shard-common/cache` backend, selected independently:
+
+- **Egress:** `config.egressDedupBackend` (`redis`|`aerospike`|`memory`|`none`;
+  empty infers `redis` when `egressDedupRedisAddr` is set, else `none`). For
+  aerospike set `config.egressDedupAerospikeHosts` (+ `…Namespace`, `…Set`).
+- **Ingress mark:** the `config.ingressSet*` equivalents. `ingressSetPrefix`
+  MUST match the proxy chart's `config.txidDedup.prefix`.
+
+Aerospike namespaces must be provisioned on the cluster; TTL floor is 1s. When
+passing comma-separated `…AerospikeHosts` via `--set`, escape the commas or use
+a values file. See
+[`bsv-multicast/docs/ModularCacheBackend/`](https://github.com/lightwebinc/bsv-multicast/blob/main/docs/ModularCacheBackend/modular-cache-backend.md).
 
 ### SSM (Source-Specific Multicast)
 
