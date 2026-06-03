@@ -48,6 +48,7 @@ See [`values.yaml`](values.yaml). Every flag accepted by the listener binary is 
 - Sender allow/deny CIDR lists
 - Beacon-driven retry endpoint discovery (BRC-126)
 - SSM (RFC 4607) opt-in: `config.sourceMode=ssm` + per-control-group bootstrap source lists
+- Unified logging: `config.logFormat` (`text`|`json`) → `LOG_FORMAT`, `config.logLevel` → `LOG_LEVEL`, `config.traceSampling` (`0`–`1`) → `TRACE_SAMPLING` (schema-validated). Set `logFormat: json` for fleet aggregation; level is runtime-togglable via `POST /loglevel` + SIGHUP. See the [Unified Logging Plan](https://github.com/lightwebinc/bsv-multicast/blob/main/docs/UnifiedLogging/unified-logging-plan.md).
 
 ### Dedup cache backend
 
