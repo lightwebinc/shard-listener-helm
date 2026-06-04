@@ -48,7 +48,7 @@ See [`values.yaml`](values.yaml). Every flag accepted by the listener binary is 
 - Sender allow/deny CIDR lists
 - Beacon-driven retry endpoint discovery (BRC-126)
 - SSM (RFC 4607) opt-in: `config.sourceMode=ssm` + per-control-group bootstrap source lists
-- Unified logging: `config.logFormat` (`text`|`json`) → `LOG_FORMAT`, `config.logLevel` → `LOG_LEVEL`, `config.traceSampling` (`0`–`1`) → `TRACE_SAMPLING` (schema-validated). Set `logFormat: json` for fleet aggregation; level is runtime-togglable via `POST /loglevel` + SIGHUP. See the [Unified Logging Plan](https://github.com/lightwebinc/bsv-multicast/blob/main/docs/UnifiedLogging/unified-logging-plan.md).
+- Unified logging: `config.logFormat` (`text`|`json`) → `LOG_FORMAT`, `config.logLevel` → `LOG_LEVEL`, `config.traceSampling` (`0`–`1`) → `TRACE_SAMPLING` (schema-validated). Set `logFormat: json` for fleet aggregation; level is runtime-togglable via `POST /loglevel` + SIGHUP. See the [Unified Logging Plan](https://github.com/lightwebinc/shard-common/blob/main/docs/logging.md).
 
 ### Dedup cache backend
 
@@ -64,7 +64,7 @@ The egress dedup gate and the courtesy ingress mark each use the modular
 Aerospike namespaces must be provisioned on the cluster; TTL floor is 1s. When
 passing comma-separated `…AerospikeHosts` via `--set`, escape the commas or use
 a values file. See
-[`bsv-multicast/docs/ModularCacheBackend/`](https://github.com/lightwebinc/bsv-multicast/blob/main/docs/ModularCacheBackend/modular-cache-backend.md).
+[`shard-common/docs/cache-backend.md`](https://github.com/lightwebinc/shard-common/blob/main/docs/cache-backend.md).
 
 ### SSM (Source-Specific Multicast)
 
