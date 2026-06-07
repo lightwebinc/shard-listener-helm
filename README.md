@@ -1,5 +1,7 @@
 # shard-listener Helm chart
 
+> Part of the [**BSV Layered Multicast**](https://github.com/lightwebinc/bsv-multicast) open-source project — see the main repository for the full architecture, design docs, and BRC specifications.
+
 Helm chart for [shard-listener](https://github.com/lightwebinc/shard-listener) — the IPv6 multicast shard subscriber in the BSV multicast transaction distribution pipeline.
 
 This repository packages templates, default values, JSON Schema validation, and CI workflows for the listener. The application source lives in [`shard-listener`](https://github.com/lightwebinc/shard-listener).
