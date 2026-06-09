@@ -32,7 +32,7 @@ helm install listener . -n bsv-mcast --create-namespace \
 
 ## Networking modes
 
-Same as the proxy chart — `multus` (default), `host`, or `unicast` (reserved). See the [composition spec](https://github.com/lightwebinc/bsv-multicast/blob/main/containerization/composition-spec.md).
+Same as the proxy chart — `multus` (default), `host`, or `unicast` (reserved). See [multicast-kube-infra](https://github.com/lightwebinc/multicast-kube-infra).
 
 ## Important constraint — `NUM_WORKERS=1`
 
@@ -79,12 +79,12 @@ retention on transient refresh failures). `config.ssmPublishersStatic`
 is a lab/CI escape hatch for the data-plane source list; production
 must use manifest-driven discovery. Chart validation fails closed when
 `sourceMode=ssm` and no bootstrap or static list is provided. See the
-[SSM Support Plan](https://github.com/lightwebinc/bsv-multicast/blob/main/docs/SourceSpecificMulticast/ssm-support-plan.md)
+[SSM Support Plan](https://github.com/lightwebinc/bsv-multicast/blob/main/DESIGN.md#source-specific-multicast-ssm)
 for fabric prerequisites (PIM-SSM, MLDv2, raised `mld_max_msf`).
 
-### BRC-137 auto-shard-config (opt-in)
+### BRC-139 auto-shard-config (opt-in)
 
-`config.autoShardConfig` exposes the BRC-137 manifest consumer. Off by
+`config.autoShardConfig` exposes the BRC-139 manifest consumer. Off by
 default; manual `config.shardBits`/`sourceMode`/`shardInclude` always win.
 When `enabled: true` the listener decodes manifests off its beacon socket
 and adopts `ShardBits`/`SourceMode` once `pilotQuorum` distinct
@@ -102,7 +102,7 @@ runtime (`union(shardInclude, pilot groups)`).
 | `liveResharding` | `LIVE_RESHARDING` | `false` | bridging vs restart-on-adopt |
 | `bridgingWindow` | `BRIDGING_WINDOW` | `0s` | `0s` ⇒ honour pilot `TransitionEpoch` |
 
-See the [Automatic Shard Configuration Plan](https://github.com/lightwebinc/bsv-multicast/blob/main/docs/AutoShardConfig/auto-shard-config-plan.md).
+See the [Automatic Shard Configuration Plan](https://github.com/lightwebinc/bsv-multicast/blob/main/DESIGN.md#automatic-shard-configuration).
 
 ## Helm test
 

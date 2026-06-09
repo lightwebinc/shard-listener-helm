@@ -171,7 +171,7 @@ config:
   otlpEndpoint: ""
   otlpInterval: "30s"
 
-  # BRC-137 auto-shard-config consumer (opt-in). See
+  # BRC-139 auto-shard-config consumer (opt-in). See
   # bsv-multicast/docs/AutoShardConfig/auto-shard-config-plan.md.
   # When enabled the listener decodes manifests off its beacon socket and
   # adopts ShardBits/SourceMode (and, with shardIncludeFromManifest, joins
