@@ -311,6 +311,9 @@ Shared pod spec body so deployment.yaml and daemonset.yaml stay in sync.
 */}}
 {{- define "shard-listener.podSpec" -}}
 serviceAccountName: {{ include "shard-listener.serviceAccountName" . }}
+{{- with .Values.terminationGracePeriodSeconds }}
+terminationGracePeriodSeconds: {{ . }}
+{{- end }}
 {{- with .Values.imagePullSecrets }}
 imagePullSecrets:
   {{- toYaml . | nindent 2 }}

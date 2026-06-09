@@ -5,8 +5,18 @@
 # When workloadType=DaemonSet, replicaCount is ignored (one pod per matching node).
 replicaCount: 1
 
-# Deployment | DaemonSet — DaemonSet recommended for production fabric coverage.
+# Deployment | DaemonSet.
+# WARNING: the default below (Deployment, replicaCount=1) is for single-node test /
+# lab use only. It does NOT provide fabric coverage — a single listener cannot receive
+# multicast on every node. For production set workloadType=DaemonSet and constrain it to
+# fabric nodes with nodeSelector/affinity (a bare DaemonSet schedules on every node,
+# including control-plane). See docs/operations for the production listener topology.
 workloadType: Deployment
+
+# Pod termination grace. MUST be >= config.drainTimeout (below), otherwise Kubernetes
+# SIGKILLs the pod before in-flight NACK recovery finishes. Empty = cluster default (30s).
+# Raise this in lockstep whenever you raise drainTimeout.
+terminationGracePeriodSeconds: 30
 
 image:
   repository: ghcr.io/lightwebinc/shard-listener
@@ -24,7 +34,16 @@ serviceAccount:
 
 podAnnotations: {}
 podLabels: {}
-podSecurityContext: {}
+# Matches the distroless/static:nonroot image (uid 65532). Enforces nonroot even if
+# the image is overridden. NET_ADMIN is granted below at the container level, which is
+# compatible with running as nonroot.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+  fsGroup: 65532
+  seccompProfile:
+    type: RuntimeDefault
 
 # MLD join + NACK socket on fabric NIC require NET_ADMIN.
 securityContext:
@@ -216,7 +235,17 @@ probes:
     timeoutSeconds: 5
     failureThreshold: 3
 
-resources: {}
+# Datapath component (multicast RX + reassembly + NACK recovery).
+# CPU-bound under load — conservative starting points; tune against your own
+# benchmark. Empty ({}) yields BestEffort QoS and no admission control.
+# Note: when running as a DaemonSet these apply per node.
+resources:
+  requests:
+    cpu: 500m
+    memory: 256Mi
+  limits:
+    cpu: "2"
+    memory: 512Mi
 nodeSelector: {}
 tolerations: []
 affinity: {}
