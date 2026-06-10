@@ -8,12 +8,12 @@ This repository packages templates, default values, JSON Schema validation, and 
 
 ## Install
 
-> The chart references `ghcr.io/lightwebinc/shard-listener:<appVersion>`. Until the image is published from the application repo, `helm install` will succeed but pods will `ImagePullBackOff`.
+> The chart references `ghcr.io/lightwebinc/shard-listener:<appVersion>` — `appVersion` always tracks a published image tag (see the contract note in [`Chart.yaml`](Chart.yaml)).
 
 ```bash
 # DaemonSet over a labeled set of fabric nodes (recommended)
 helm install listener oci://ghcr.io/lightwebinc/charts/shard-listener \
-  --version 0.1.0 -n bsv-mcast --create-namespace \
+  --version 0.3.2 -n bsv-mcast --create-namespace \
   --set workloadType=DaemonSet \
   --set 'nodeSelector.bsv-mcast/role=listener' \
   --set config.retryEndpoints='[fd20::24]:9300\,[fd20::25]:9300\,[fd20::26]:9300'
@@ -39,6 +39,10 @@ Same as the proxy chart — `multus` (default), `host`, or `unicast` (reserved).
 The Linux kernel delivers each multicast datagram to **all** sockets in a SO_REUSEPORT group with no load balancing. Multiple listener workers cause N-fold frame duplication. The chart hardcodes `NUM_WORKERS=1` in the rendered Deployment regardless of `config.numWorkers`, and `values.schema.json` rejects any value other than `1`.
 
 ## Values reference
+
+### Pod defaults (v0.3.2+)
+
+The chart ships hardened pod-level defaults: `resources` requests/limits (per node when running as a DaemonSet), a nonroot `podSecurityContext` (uid 65532, seccomp `RuntimeDefault`), and `terminationGracePeriodSeconds: 30` — keep it `>= config.drainTimeout` so in-flight NACK recovery completes on shutdown. The default `workloadType: Deployment` is single-node/test-only; production needs `DaemonSet` plus a fabric `nodeSelector` (see the warning in [`values.yaml`](values.yaml)).
 
 See [`values.yaml`](values.yaml). Every flag accepted by the listener binary is exposed under `.config`, including:
 

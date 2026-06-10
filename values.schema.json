@@ -6,6 +6,9 @@
   "properties": {
     "workloadType": { "type": "string", "enum": ["Deployment", "DaemonSet"] },
     "replicaCount": { "type": "integer", "minimum": 0 },
+    "terminationGracePeriodSeconds": { "type": ["integer", "null"], "minimum": 0 },
+    "resources": { "type": "object" },
+    "podSecurityContext": { "type": "object" },
     "image": {
       "type": "object",
       "properties": {
