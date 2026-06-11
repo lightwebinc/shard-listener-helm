@@ -42,6 +42,7 @@
         },
         "ssmPublishersStatic": { "type": "array", "items": { "type": "string" } },
         "ssmBootstrapRefresh": { "type": "string" },
+        "localSource": { "type": "string" },
         "egressProto": { "type": "string", "enum": ["udp", "tcp"] },
         "headerEgressProto": { "type": "string", "enum": ["udp", "tcp"] },
         "beaconScope": { "type": "string", "enum": ["link", "site", "org", "global"] },

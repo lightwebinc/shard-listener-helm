@@ -102,6 +102,10 @@ to defend against schema bypass.
 - name: SSM_BOOTSTRAP_REFRESH
   value: {{ .Values.config.ssmBootstrapRefresh | quote }}
 {{- end }}
+{{- if .Values.config.localSource }}
+- name: LOCAL_SOURCE
+  value: {{ .Values.config.localSource | quote }}
+{{- end }}
 - name: SHARD_INCLUDE
   value: {{ .Values.config.shardInclude | quote }}
 - name: SUBTREE_INCLUDE

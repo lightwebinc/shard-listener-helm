@@ -83,6 +83,14 @@ config:
   ssmPublishersStatic: []
   ssmBootstrapRefresh: "30s"
 
+  # localSource: the co-located proxy's BIND_SOURCE on a collapsed node. Excluded
+  # from every roster-driven (S,G) join — joining the node's own source on the PIM
+  # interface installs an iif==oif mroute and loops originated frames until
+  # hop-limit death (~60x amplification). Leave empty unless proxy and listener
+  # are co-located on the same node; this listener will not receive own-node
+  # frames via multicast when set.
+  localSource: ""
+
   # Downstream egress
   egressAddr: "127.0.0.1:9100"
   egressProto: "udp"

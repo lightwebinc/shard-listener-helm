@@ -86,6 +86,14 @@ must use manifest-driven discovery. Chart validation fails closed when
 [SSM Support Plan](https://github.com/lightwebinc/bsv-multicast/blob/main/DESIGN.md#source-specific-multicast-ssm)
 for fabric prerequisites (PIM-SSM, MLDv2, raised `mld_max_msf`).
 
+On a collapsed node (proxy and listener co-located), set
+`config.localSource` to the co-located proxy's `BIND_SOURCE`. That source
+is dropped from every roster-driven `(S,G)` join; joining the node's own
+source on the PIM interface would install an `iif==oif` mroute and loop
+originated frames until hop-limit death. When set, this listener does not
+receive own-node frames via multicast — mirror locally where own-source
+completeness matters.
+
 ### BRC-139 auto-shard-config (opt-in)
 
 `config.autoShardConfig` exposes the BRC-139 manifest consumer. Off by
