@@ -2,7 +2,7 @@ apiVersion: v2
 name: shard-listener
 description: IPv6 multicast shard subscriber for the Bitcoin transaction distribution network
 type: application
-version: 0.3.3
+version: 0.3.4
 # appVersion MUST equal a tag published on ghcr.io/lightwebinc/shard-listener
 # (the chart's tag:"" default pulls this). Images are published manually via the
 # binary repo's image-publish.yml workflow; bump appVersion ONLY in lockstep with

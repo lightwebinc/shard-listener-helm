@@ -75,7 +75,7 @@ config:
   # sourceMode "ssm" requires at least one of ssmBootstrap.* or
   # ssmPublishersStatic. Each list entry is an IPv6 literal or DNS name;
   # the bootstrap.Resolver loop resolves AAAA records every ssmBootstrapRefresh.
-  sourceMode: "asm"
+  sourceMode: "ssm"
   ssmBootstrap:
     manifest: []         # ["shard-manifest-headless.svc.cluster.local"]
     beacon: []           # ["retry-endpoint-headless.svc.cluster.local"]
