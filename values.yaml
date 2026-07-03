@@ -71,6 +71,11 @@ config:
   subtreeInclude: ""
   subtreeExclude: ""
 
+  # Role split (P3b): collapsed (default; join fabric (S,G) + gap/NACK + fan-out)
+  # | receiver (mcast half) | delivery (consumer half: unicast-ingest + fan-out,
+  # NO mcast join, NO gap/NACK — receives raw frames from a receiver over unicast).
+  mode: "collapsed"
+
   # SSM (RFC 4607). See bsv-multicast/docs/SourceSpecificMulticast.
   # sourceMode "ssm" requires at least one of ssmBootstrap.* or
   # ssmPublishersStatic. Each list entry is an IPv6 literal or DNS name;

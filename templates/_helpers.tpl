@@ -80,6 +80,8 @@ to defend against schema bypass.
   value: {{ .Values.config.mcGroupId | quote }}
 - name: SOURCE_MODE
   value: {{ .Values.config.sourceMode | default "asm" | quote }}
+- name: LISTENER_MODE
+  value: {{ .Values.config.mode | default "collapsed" | quote }}
 {{- with .Values.config.ssmBootstrap }}
 {{- if .manifest }}
 - name: SSM_BOOTSTRAP_MANIFEST
