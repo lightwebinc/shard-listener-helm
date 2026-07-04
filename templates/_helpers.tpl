@@ -116,6 +116,10 @@ to defend against schema bypass.
   value: {{ .Values.config.subtreeExclude | quote }}
 - name: EGRESS_ADDR
   value: {{ .Values.config.egressAddr | quote }}
+{{- if .Values.config.deliveryAddrs }}
+- name: DELIVERY_ADDRS
+  value: {{ join "," .Values.config.deliveryAddrs | quote }}
+{{- end }}
 - name: EGRESS_PROTO
   value: {{ .Values.config.egressProto | quote }}
 - name: STRIP_HEADER

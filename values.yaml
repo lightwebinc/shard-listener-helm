@@ -76,6 +76,11 @@ config:
   # NO mcast join, NO gap/NACK — receives raw frames from a receiver over unicast).
   mode: "collapsed"
 
+  # receiver mode only: the delivery-tier host:port set every demuxed frame is
+  # fanned out to (envelope-preserving). Empty falls back to the single egressAddr.
+  # e.g. ["dlv-a.internal:9001", "dlv-b.internal:9001"]
+  deliveryAddrs: []
+
   # SSM (RFC 4607). See bsv-multicast/docs/SourceSpecificMulticast.
   # sourceMode "ssm" requires at least one of ssmBootstrap.* or
   # ssmPublishersStatic. Each list entry is an IPv6 literal or DNS name;
