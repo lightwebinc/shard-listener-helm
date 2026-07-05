@@ -13,10 +13,10 @@ This repository packages templates, default values, JSON Schema validation, and 
 ```bash
 # DaemonSet over a labeled set of fabric nodes (recommended)
 helm install listener oci://ghcr.io/lightwebinc/charts/shard-listener \
-  --version 0.4.0 -n bsv-mcast --create-namespace \
+  --version 0.4.2 -n bsv-mcast --create-namespace \
   --set workloadType=DaemonSet \
   --set 'nodeSelector.bsv-mcast/role=listener' \
-  --set config.retryEndpoints='[fd20::24]:9300\,[fd20::25]:9300\,[fd20::26]:9300'
+  --set config.retryEndpoints='[2001:db8::24]:9300\,[2001:db8::25]:9300\,[2001:db8::26]:9300'
 
 # Single-replica Deployment
 helm install listener . -n bsv-mcast --create-namespace \
@@ -46,8 +46,9 @@ The chart ships hardened pod-level defaults: `resources` requests/limits (per no
 
 See [`values.yaml`](values.yaml). Every flag accepted by the listener binary is exposed under `.config`, including:
 
+- `config.mode` — P3b role split (`collapsed`|`receiver`|`delivery`; requires appVersion ≥ 1.6.9) and `config.deliveryAddrs` — receiver-mode delivery fan-out target set (requires appVersion ≥ 1.7.0)
 - Multicast egress / domain bridging (BRC-128)
-- BRC-131 block header retransmission (unicast + multicast)
+- Block header egress — BRC-135 frames emitted from BRC-131 announcements (unicast + multicast)
 - BRC-127 subtree group subscriptions
 - BRC-132 subtree data caching
 - Cross-listener TxID dedup via a modular cache backend (see below)
@@ -74,15 +75,18 @@ a values file. See
 
 ### SSM (Source-Specific Multicast)
 
-`config.sourceMode` defaults to `asm`. When `ssm`, supply at least one
+`config.sourceMode` defaults to `ssm`; `asm` remains a lab/dev fallback
+(RFC 8815 deprecates inter-domain ASM). With `ssm`, supply at least one
 of `config.ssmBootstrap.{manifest,beacon,subtreeAnnounce}` (DNS names
 or IPv6 literals — headless-Service names are the production pattern).
 Each list renders to its own `SSM_BOOTSTRAP_*` env var and is resolved
 via `shard-common/bootstrap.Resolver` (fail-closed startup; last-good
 retention on transient refresh failures). `config.ssmPublishersStatic`
 is a lab/CI escape hatch for the data-plane source list; production
-must use manifest-driven discovery. Chart validation fails closed when
-`sourceMode=ssm` and no bootstrap or static list is provided. See the
+must use manifest-driven discovery. The fail-closed check lives in the
+binary, not in chart validation: at startup the listener refuses to run
+with `sourceMode=ssm` and no bootstrap or static list, so an install
+without one CrashLoops until sources are set. See the
 [SSM Support Plan](https://github.com/lightwebinc/bsv-multicast/blob/main/DESIGN.md#source-specific-multicast-ssm)
 for fabric prerequisites (PIM-SSM, MLDv2, raised `mld_max_msf`).
 

@@ -35,3 +35,9 @@ annotations:
       description: config.localSource (own-source SSM join loop guard for collapsed nodes)
     - kind: added
       description: config.mode (P3b role split — collapsed|receiver|delivery); appVersion 1.6.9
+    - kind: added
+      description: config.deliveryAddrs (receiver-mode delivery fan-out target set)
+    - kind: changed
+      description: appVersion 1.7.1 (NACK re-baseline on emitter change + transition-tail recovery)
+    - kind: changed
+      description: config.stripHeader default now true (matches the binary default)

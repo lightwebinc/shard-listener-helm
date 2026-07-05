@@ -81,7 +81,8 @@ config:
   # e.g. ["dlv-a.internal:9001", "dlv-b.internal:9001"]
   deliveryAddrs: []
 
-  # SSM (RFC 4607). See bsv-multicast/docs/SourceSpecificMulticast.
+  # SSM (RFC 4607). See
+  # https://github.com/lightwebinc/bsv-multicast/blob/main/DESIGN.md#source-specific-multicast-ssm
   # sourceMode "ssm" requires at least one of ssmBootstrap.* or
   # ssmPublishersStatic. Each list entry is an IPv6 literal or DNS name;
   # the bootstrap.Resolver loop resolves AAAA records every ssmBootstrapRefresh.
@@ -104,7 +105,10 @@ config:
   # Downstream egress
   egressAddr: "127.0.0.1:9100"
   egressProto: "udp"
-  stripHeader: false
+  # true (binary default): forward payload-only (raw BSV tx) — what a downstream
+  # node/miner expects. Set false only when the downstream re-reads whole frames
+  # (e.g. domain bridging).
+  stripHeader: true
 
   # Multicast egress (domain bridging)
   mcEgressEnabled: false
