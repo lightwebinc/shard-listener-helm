@@ -69,6 +69,18 @@ config:
   mcGroupId: "0x000B"
   shardInclude: ""
   subtreeInclude: ""
+  # BRC-148 BEEF object plane (receiver/collapsed). The listener joins the plane
+  # band (0x1000+) when topics and/or explicit groups are set. beefTopics is a
+  # comma list of overlay topic NAMES (or 64-hex TopicIDs) that derives band joins
+  # and the topic filter; beefGroups is a comma list of plane-relative indices for
+  # aggregator mode (no topic restriction). beefShardBits must match the proxy.
+  # beefVersions gates accepted encodings (comma of beef|beefv2|atomic; empty=all).
+  # beefVerifyContent verifies ContentID==SHA-256d(object) before fan-out (debug).
+  beefTopics: ""
+  beefGroups: ""
+  beefShardBits: 4
+  beefVersions: ""
+  beefVerifyContent: false
   subtreeExclude: ""
 
   # Role split (P3b): collapsed (default; join fabric (S,G) + gap/NACK + fan-out)

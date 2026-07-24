@@ -114,6 +114,16 @@ to defend against schema bypass.
   value: {{ .Values.config.subtreeInclude | quote }}
 - name: SUBTREE_EXCLUDE
   value: {{ .Values.config.subtreeExclude | quote }}
+- name: BEEF_TOPICS
+  value: {{ .Values.config.beefTopics | default "" | quote }}
+- name: BEEF_GROUPS
+  value: {{ .Values.config.beefGroups | default "" | quote }}
+- name: BEEF_SHARD_BITS
+  value: {{ .Values.config.beefShardBits | default 4 | quote }}
+- name: BEEF_VERSIONS
+  value: {{ .Values.config.beefVersions | default "" | quote }}
+- name: BEEF_VERIFY_CONTENT
+  value: {{ .Values.config.beefVerifyContent | default false | quote }}
 - name: EGRESS_ADDR
   value: {{ .Values.config.egressAddr | quote }}
 {{- if .Values.config.deliveryAddrs }}
