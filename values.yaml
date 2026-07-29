@@ -78,7 +78,7 @@ config:
   # beefVerifyContent verifies ContentID==SHA-256d(object) before fan-out (debug).
   beefTopics: ""
   beefGroups: ""
-  beefShardBits: 4
+  beefShardBits: 0
   beefVersions: ""
   beefVerifyContent: false
   subtreeExclude: ""
