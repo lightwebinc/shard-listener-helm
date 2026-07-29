@@ -79,6 +79,7 @@ config:
   beefTopics: ""
   beefGroups: ""
   beefShardBits: 0
+  beefMaxObjectBytes: 1048576  # D9 bound; MUST match the ingress proxies'
   beefVersions: ""
   beefVerifyContent: false
   subtreeExclude: ""
