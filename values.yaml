@@ -212,6 +212,20 @@ config:
   # workers cause N-fold frame duplication. Do not change this.
   numWorkers: 1
   verifyPayloadHash: false
+
+  # Block control-plane integrity. requireBlockPow gates BRC-131 block
+  # announces on real header proof-of-work and correlates the BRC-133 coinbase
+  # with a validated block before fan-out — announces arriving over multicast
+  # bypass the local proxy, so the edge re-validates. DEFAULT TRUE, matching the
+  # binary; BRC-135 header egress is fed downstream of this gate, so turning it
+  # off also stops validating anything the header lane emits.
+  # minPowBits is the difficulty floor in Bitcoin compact nBits: "0" (default)
+  # means header self-consistency only. mainnet/testnet "0x1d00ffff",
+  # devnet "0x207fffff". Hex MUST carry the 0x prefix — a bare "1d00ffff" is
+  # parsed as decimal and the listener refuses to start.
+  requireBlockPow: true       # REQUIRE_BLOCK_POW
+  minPowBits: "0"             # MIN_POW_BITS
+
   drainTimeout: "0s"
   debug: false  # deprecated alias for logLevel=debug
   # Unified logging — see bsv-multicast/docs/UnifiedLogging/unified-logging-plan.md

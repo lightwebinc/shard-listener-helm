@@ -281,6 +281,13 @@ to defend against schema bypass.
   value: "1"
 - name: VERIFY_PAYLOAD_HASH
   value: {{ .Values.config.verifyPayloadHash | quote }}
+# Block control-plane gate. Binary default is TRUE, so these are emitted
+# UNCONDITIONALLY — an omitted var would leave `requireBlockPow: false` a
+# silent no-op. An empty value falls back to the binary default.
+- name: REQUIRE_BLOCK_POW
+  value: {{ if kindIs "bool" .Values.config.requireBlockPow }}{{ .Values.config.requireBlockPow | quote }}{{ else }}"true"{{ end }}
+- name: MIN_POW_BITS
+  value: {{ .Values.config.minPowBits | default "0" | quote }}
 - name: DRAIN_TIMEOUT
   value: {{ .Values.config.drainTimeout | quote }}
 - name: DEBUG

@@ -49,6 +49,7 @@ See [`values.yaml`](values.yaml). Every flag accepted by the listener binary is 
 - `config.mode` — P3b role split (`collapsed`|`receiver`|`delivery`; requires appVersion ≥ 1.6.9) and `config.deliveryAddrs` — receiver-mode delivery fan-out target set (requires appVersion ≥ 1.7.0)
 - Multicast egress / domain bridging (BRC-128)
 - Block header egress — BRC-135 frames emitted from BRC-131 announcements (unicast + multicast)
+- Block control-plane PoW gate: `config.requireBlockPow` (default `true`) + `config.minPowBits` (see below)
 - BRC-127 subtree group subscriptions
 - BRC-132 subtree data caching
 - Cross-listener TxID dedup via a modular cache backend (see below)
@@ -56,6 +57,19 @@ See [`values.yaml`](values.yaml). Every flag accepted by the listener binary is 
 - Beacon-driven retry endpoint discovery (BRC-126)
 - SSM (RFC 4607) opt-in: `config.sourceMode=ssm` + per-control-group bootstrap source lists
 - Unified logging: `config.logFormat` (`text`|`json`) → `LOG_FORMAT`, `config.logLevel` → `LOG_LEVEL`, `config.traceSampling` (`0`–`1`) → `TRACE_SAMPLING` (schema-validated). Set `logFormat: json` for fleet aggregation; level is runtime-togglable via `POST /loglevel` + SIGHUP. See the [Unified Logging Plan](https://github.com/lightwebinc/shard-common/blob/main/docs/logging.md).
+
+### Block PoW gate (default ON)
+
+| Key | Env var | Default | Notes |
+|-----|---------|---------|-------|
+| `config.requireBlockPow` | `REQUIRE_BLOCK_POW` | `true` | Gate BRC-131 block announces on real header proof-of-work and correlate the BRC-133 coinbase with a validated block before fan-out. Announces arriving over multicast bypass the local proxy, so the edge re-validates. **BRC-135 header egress is fed downstream of this gate** — disabling it also stops validating what the header lane emits. |
+| `config.minPowBits` | `MIN_POW_BITS` | `"0"` | Difficulty floor in Bitcoin compact nBits. `"0"` = header self-consistency only. mainnet/testnet `"0x1d00ffff"`, devnet `"0x207fffff"`. |
+
+Both env vars are rendered **unconditionally**, so `requireBlockPow: false` really
+turns the gate off — with a conditional (omit-when-false) rendering the binary's
+`true` default would silently win. `minPowBits` hex MUST carry the `0x` prefix: a
+bare `"1d00ffff"` is parsed as decimal and the listener refuses to start
+(`values.schema.json` rejects it at install time).
 
 ### Dedup cache backend
 
