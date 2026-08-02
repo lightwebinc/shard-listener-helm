@@ -60,7 +60,9 @@ networking:
   host:
     dnsPolicy: ClusterFirstWithHostNet
 
-# Full surface — every flag in shard-listener/config/config.go.
+# Most flags in shard-listener/config/config.go; the NACK tail-probe family
+# (-nack-backoff-base, -nack-tail-probe*, -nack-max-flows, -nack-max-forward-jump)
+# and -rebucket-relay are settable via extraEnv.
 config:
   multicastIf: "eth0"
   listenPort: 9001
@@ -182,7 +184,7 @@ config:
   nodeId: ""
   # Tier-2 backend is modular (shard-common/cache): redis|aerospike|memory|none.
   # Empty backend infers redis when the matching redisAddr is set, else none.
-  # See bsv-multicast/docs/ModularCacheBackend/modular-cache-backend.md
+  # See shard-common/docs/cache-backend.md
   egressDedupBackend: ""
   egressDedupRedisAddr: ""
   egressDedupAerospikeHosts: ""        # comma-separated host:port
@@ -228,7 +230,7 @@ config:
 
   drainTimeout: "0s"
   debug: false  # deprecated alias for logLevel=debug
-  # Unified logging — see bsv-multicast/docs/UnifiedLogging/unified-logging-plan.md
+  # Unified logging — see shard-common/docs/logging.md
   logFormat: "text"   # text (stderr) | json (stdout, for fleet aggregation)
   logLevel: "info"    # debug|info|warn|error; runtime-togglable via POST /loglevel + SIGHUP
   traceSampling: 0    # 0..1 trace head sampling (0 = off; exports via otlpEndpoint; control-plane only)
@@ -240,7 +242,7 @@ config:
   otlpInterval: "30s"
 
   # BRC-139 auto-shard-config consumer (opt-in). See
-  # bsv-multicast/docs/AutoShardConfig/auto-shard-config-plan.md.
+  # bsv-multicast/DESIGN.md#automatic-shard-configuration.
   # When enabled the listener decodes manifests off its beacon socket and
   # adopts ShardBits/SourceMode (and, with shardIncludeFromManifest, joins
   # pilot groups via runtime AddGroup/RemoveGroup) once quorum + hysteresis

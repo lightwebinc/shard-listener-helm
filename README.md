@@ -13,7 +13,7 @@ This repository packages templates, default values, JSON Schema validation, and 
 ```bash
 # DaemonSet over a labeled set of fabric nodes (recommended)
 helm install listener oci://ghcr.io/lightwebinc/charts/shard-listener \
-  --version 0.6.0 -n bsv-mcast --create-namespace \
+  --version 0.7.1 -n bsv-mcast --create-namespace \
   --set workloadType=DaemonSet \
   --set 'nodeSelector.bsv-mcast/role=listener' \
   --set config.retryEndpoints='[2001:db8::24]:9300\,[2001:db8::25]:9300\,[2001:db8::26]:9300'
@@ -44,7 +44,7 @@ The Linux kernel delivers each multicast datagram to **all** sockets in a SO_REU
 
 The chart ships hardened pod-level defaults: `resources` requests/limits (per node when running as a DaemonSet), a nonroot `podSecurityContext` (uid 65532, seccomp `RuntimeDefault`), and `terminationGracePeriodSeconds: 30` — keep it `>= config.drainTimeout` so in-flight NACK recovery completes on shutdown. The default `workloadType: Deployment` is single-node/test-only; production needs `DaemonSet` plus a fabric `nodeSelector` (see the warning in [`values.yaml`](values.yaml)).
 
-See [`values.yaml`](values.yaml). Every flag accepted by the listener binary is exposed under `.config`, including:
+See [`values.yaml`](values.yaml). Most flags accepted by the listener binary are exposed under `.config` — the NACK tail-probe family (`-nack-backoff-base`, `-nack-tail-probe*`, `-nack-max-flows`, `-nack-max-forward-jump`) and `-rebucket-relay` are settable via `extraEnv` — including:
 
 - `config.mode` — P3b role split (`collapsed`|`receiver`|`delivery`; requires appVersion ≥ 1.6.9) and `config.deliveryAddrs` — receiver-mode delivery fan-out target set (requires appVersion ≥ 1.7.0)
 - Multicast egress / domain bridging (BRC-128)
