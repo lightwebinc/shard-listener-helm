@@ -119,7 +119,11 @@ to defend against schema bypass.
 - name: BEEF_GROUPS
   value: {{ .Values.config.beefGroups | default "" | quote }}
 - name: BEEF_SHARD_BITS
-  value: {{ .Values.config.beefShardBits | default 4 | quote }}
+  {{- /* int (not default): Go-template default treats 0 as empty, so
+         `| default 4` silently widened an explicit 0 (single group) to 4. */}}
+  value: {{ .Values.config.beefShardBits | int | quote }}
+- name: BEEF_MAX_OBJECT_BYTES
+  value: {{ .Values.config.beefMaxObjectBytes | default 1048576 | int64 | quote }}
 - name: BEEF_VERSIONS
   value: {{ .Values.config.beefVersions | default "" | quote }}
 - name: BEEF_VERIFY_CONTENT
@@ -250,7 +254,7 @@ to defend against schema bypass.
 - name: EGRESS_DEDUP_TTL_REDIS
   value: {{ .Values.config.egressDedupTtlRedis | quote }}
 - name: EGRESS_DEDUP_LOCAL_CAP
-  value: {{ .Values.config.egressDedupLocalCap | quote }}
+  value: {{ .Values.config.egressDedupLocalCap | int64 | quote }}
 {{- if or .Values.config.ingressSetRedisAddr .Values.config.ingressSetAerospikeHosts (.Values.config.ingressSetBackend | default "" | ne "") }}
 {{- if .Values.config.ingressSetBackend }}
 - name: INGRESS_SET_BACKEND
@@ -273,7 +277,7 @@ to defend against schema bypass.
 - name: INGRESS_SET_TTL
   value: {{ .Values.config.ingressSetTtl | quote }}
 - name: INGRESS_SET_LOCAL_CAP
-  value: {{ .Values.config.ingressSetLocalCap | quote }}
+  value: {{ .Values.config.ingressSetLocalCap | int64 | quote }}
 {{- end }}
 # NUM_WORKERS is intentionally hardcoded to 1 by the chart.
 # See values.yaml comment and the SO_REUSEPORT multicast notes.
