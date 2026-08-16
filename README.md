@@ -44,7 +44,7 @@ The Linux kernel delivers each multicast datagram to **all** sockets in a SO_REU
 
 The chart ships hardened pod-level defaults: `resources` requests/limits (per node when running as a DaemonSet), a nonroot `podSecurityContext` (uid 65532, seccomp `RuntimeDefault`), and `terminationGracePeriodSeconds: 30` — keep it `>= config.drainTimeout` so in-flight NACK recovery completes on shutdown. The default `workloadType: Deployment` is single-node/test-only; production needs `DaemonSet` plus a fabric `nodeSelector` (see the warning in [`values.yaml`](values.yaml)).
 
-See [`values.yaml`](values.yaml). Most flags accepted by the listener binary are exposed under `.config` — the NACK tail-probe family (`-nack-backoff-base`, `-nack-tail-probe*`, `-nack-max-flows`, `-nack-max-forward-jump`) and `-rebucket-relay` are settable via `extraEnv` (`-nack-tail-probe*` requires appVersion ≥ 1.15.0, `-rebucket-relay` ≥ 1.10.1; the rest are honoured by the current appVersion) — including:
+See [`values.yaml`](values.yaml). Most flags accepted by the listener binary are exposed under `.config` — the NACK tail-probe family (`-nack-backoff-base`, `-nack-tail-probe*`, `-nack-max-flows`, `-nack-max-forward-jump`) and `-rebucket-relay` are settable via `extraEnv` (all honoured by the default appVersion; on an older `image.tag` pin `-nack-tail-probe*` requires ≥ 1.15.0 and `-rebucket-relay` ≥ 1.10.1) — including:
 
 - `config.mode` — P3b role split (`collapsed`|`receiver`|`delivery`; requires appVersion ≥ 1.6.9) and `config.deliveryAddrs` — receiver-mode delivery fan-out target set (requires appVersion ≥ 1.7.0)
 - Multicast egress / domain bridging (BRC-128)
@@ -62,7 +62,7 @@ See [`values.yaml`](values.yaml). Most flags accepted by the listener binary are
 
 | Key | Env var | Default | Notes |
 |-----|---------|---------|-------|
-| `config.requireBlockPow` | `REQUIRE_BLOCK_POW` | `true` | Gate BRC-131 block announces on real header proof-of-work and correlate the BRC-133 coinbase with a validated block before fan-out. Announces arriving over multicast bypass the local proxy, so the edge re-validates. **BRC-135 header egress is fed downstream of this gate** — disabling it also stops validating what the header lane emits. Binary default is `true` on appVersion ≥ 1.16.0 (earlier images default `false`; the env is rendered unconditionally, so the chart value governs either way). |
+| `config.requireBlockPow` | `REQUIRE_BLOCK_POW` | `true` | Gate BRC-131 block announces on real header proof-of-work and correlate the BRC-133 coinbase with a validated block before fan-out. Announces arriving over multicast bypass the local proxy, so the edge re-validates. **BRC-135 header egress is fed downstream of this gate** — disabling it also stops validating what the header lane emits. Binary default is `true` since image 1.16.0 — satisfied by the default appVersion (older pins default `false`; the env is rendered unconditionally, so the chart value governs either way). |
 | `config.minPowBits` | `MIN_POW_BITS` | `"0"` | Difficulty floor in Bitcoin compact nBits. `"0"` = header self-consistency only. mainnet/testnet `"0x1d00ffff"`, devnet `"0x207fffff"`. |
 
 Both env vars are rendered **unconditionally**, so `requireBlockPow: false` really
