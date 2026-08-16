@@ -1,5 +1,6 @@
 # Default values for shard-listener.
-# Every binary flag is exposed under .config; advanced ones empty/disabled by default.
+# Most binary flags are exposed under .config (advanced ones empty/disabled by
+# default); the NACK tail-probe family and -rebucket-relay are extraEnv-only.
 
 # When workloadType=Deployment, replicaCount controls replicas.
 # When workloadType=DaemonSet, replicaCount is ignored (one pod per matching node).
@@ -10,7 +11,9 @@ replicaCount: 1
 # lab use only. It does NOT provide fabric coverage — a single listener cannot receive
 # multicast on every node. For production set workloadType=DaemonSet and constrain it to
 # fabric nodes with nodeSelector/affinity (a bare DaemonSet schedules on every node,
-# including control-plane). See docs/operations for the production listener topology.
+# including control-plane). See multicast-kube-infra docs/operations
+# (https://github.com/lightwebinc/multicast-kube-infra/blob/main/docs/operations.md)
+# for the production listener topology.
 workloadType: Deployment
 
 # Pod termination grace. MUST be >= config.drainTimeout (below), otherwise Kubernetes
@@ -62,7 +65,8 @@ networking:
 
 # Most flags in shard-listener/config/config.go; the NACK tail-probe family
 # (-nack-backoff-base, -nack-tail-probe*, -nack-max-flows, -nack-max-forward-jump)
-# and -rebucket-relay are settable via extraEnv.
+# and -rebucket-relay are settable via extraEnv (-nack-tail-probe* needs image
+# >= 1.15.0, -rebucket-relay >= 1.10.1; the rest are honoured by appVersion).
 config:
   multicastIf: "eth0"
   listenPort: 9001
@@ -78,6 +82,8 @@ config:
   # aggregator mode (no topic restriction). beefShardBits must match the proxy.
   # beefVersions gates accepted encodings (comma of beef|beefv2|atomic; empty=all).
   # beefVerifyContent verifies ContentID==SHA-256d(object) before fan-out (debug).
+  # Requires image >= 1.10.0 (beefMaxObjectBytes >= 1.12.0); earlier images
+  # ignore the BEEF_* env vars.
   beefTopics: ""
   beefGroups: ""
   beefShardBits: 0
@@ -219,8 +225,10 @@ config:
   # announces on real header proof-of-work and correlates the BRC-133 coinbase
   # with a validated block before fan-out — announces arriving over multicast
   # bypass the local proxy, so the edge re-validates. DEFAULT TRUE, matching the
-  # binary; BRC-135 header egress is fed downstream of this gate, so turning it
-  # off also stops validating anything the header lane emits.
+  # binary default on image >= 1.16.0 (earlier images default false; the env is
+  # rendered unconditionally, so the chart value governs either way); BRC-135
+  # header egress is fed downstream of this gate, so turning it off also stops
+  # validating anything the header lane emits.
   # minPowBits is the difficulty floor in Bitcoin compact nBits: "0" (default)
   # means header self-consistency only. mainnet/testnet "0x1d00ffff",
   # devnet "0x207fffff". Hex MUST carry the 0x prefix — a bare "1d00ffff" is
