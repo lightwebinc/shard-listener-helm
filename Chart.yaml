@@ -2,12 +2,12 @@ apiVersion: v2
 name: shard-listener
 description: IPv6 multicast shard subscriber for the Bitcoin transaction distribution network
 type: application
-version: 0.7.5
+version: 0.7.6
 # appVersion MUST equal a tag published on ghcr.io/lightwebinc/shard-listener
 # (the chart's tag:"" default pulls this). Images are published manually via the
 # binary repo's image-publish.yml workflow; bump appVersion ONLY in lockstep with
 # an image publish — binary git tags are NOT image tags until published.
-appVersion: "1.22.1"
+appVersion: "1.24.1"
 kubeVersion: ">= 1.27.0-0"
 keywords:
   - bitcoin
@@ -59,3 +59,5 @@ annotations:
       description: BEEF_MAX_OBJECT_BYTES is now rendered; config.beefMaxObjectBytes previously had no effect (honoured by image 1.12.0 and later)
     - kind: fixed
       description: EGRESS_DEDUP_LOCAL_CAP / INGRESS_SET_LOCAL_CAP render as integers, not scientific notation
+    - kind: changed
+      description: appVersion 1.24.1 — the default image adds the retry-tee receive mirror and aligns payload verification with the proxy (shard-common v0.19.4, BSD netjoin). Built with Go 1.27.1.
