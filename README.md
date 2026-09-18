@@ -62,7 +62,7 @@ See [`values.yaml`](values.yaml). Most flags accepted by the listener binary are
 
 | Key | Env var | Default | Notes |
 |-----|---------|---------|-------|
-| `config.requireBlockPow` | `REQUIRE_BLOCK_POW` | `true` | Gate BRC-131 block announces on real header proof-of-work and correlate the BRC-133 coinbase with a validated block before fan-out. Announces arriving over multicast bypass the local proxy, so the edge re-validates. **BRC-135 header egress is fed downstream of this gate** — disabling it also stops validating what the header lane emits. Binary default is `true` since image 1.16.0 — satisfied by the default appVersion (older pins default `false`; the env is rendered unconditionally, so the chart value governs either way). |
+| `config.requireBlockPow` | `REQUIRE_BLOCK_POW` | `true` | Gate BRC-131 block announces on real header proof-of-work and drop any deprecated standalone BRC-133 coinbase frame (counted as `coinbase_legacy`; the coinbase rides inline in the block) before fan-out. Announces arriving over multicast bypass the local proxy, so the edge re-validates. **BRC-135 header egress is fed downstream of this gate** — disabling it also stops validating what the header lane emits. Binary default is `true` since image 1.16.0 — satisfied by the default appVersion (older pins default `false`; the env is rendered unconditionally, so the chart value governs either way). |
 | `config.minPowBits` | `MIN_POW_BITS` | `"0"` | Difficulty floor in Bitcoin compact nBits. `"0"` = header self-consistency only. mainnet/testnet `"0x1d00ffff"`, devnet `"0x207fffff"`. |
 
 Both env vars are rendered **unconditionally**, so `requireBlockPow: false` really

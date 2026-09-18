@@ -224,8 +224,9 @@ config:
   verifyPayloadHash: false
 
   # Block control-plane integrity. requireBlockPow gates BRC-131 block
-  # announces on real header proof-of-work and correlates the BRC-133 coinbase
-  # with a validated block before fan-out — announces arriving over multicast
+  # announces on real header proof-of-work and drops any deprecated standalone
+  # BRC-133 coinbase frame (the coinbase rides inline in the block) before
+  # fan-out — announces arriving over multicast
   # bypass the local proxy, so the edge re-validates. DEFAULT TRUE, matching the
   # binary default since image 1.16.0 — the default appVersion satisfies this
   # (older pins default false; the env is

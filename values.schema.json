@@ -177,7 +177,7 @@
         },
         "requireBlockPow": {
           "type": "boolean",
-          "description": "REQUIRE_BLOCK_POW — gate BRC-131 block announces on header PoW and correlate BRC-133 coinbase with a validated block before fan-out. Default true (matches the binary); BRC-135 header egress is fed downstream of this gate."
+          "description": "REQUIRE_BLOCK_POW — gate BRC-131 block announces on header PoW and drop any deprecated standalone BRC-133 coinbase frame before fan-out. Default true (matches the binary); BRC-135 header egress is fed downstream of this gate."
         },
         "minPowBits": {
           "type": "string",
